@@ -1,4 +1,4 @@
-const API="https://script.google.com/macros/s/AKfycbzknnOviKE3zsA3-SeiJU5F9JMRB_DkiBAy-0w1uIfdh2DQa5xvFtEiSRGAxrAufVSS/exec"
+const API = "https://script.google.com/macros/s/AKfycbzknnOviKE3zsA3-SeiJU5F9JMRB_DkiBAy-0w1uIfdh2DQa5xvFtEiSRGAxrAufVSS/exec";
 
 function calculate(gpa,language,score){
 
@@ -50,16 +50,14 @@ choice5:document.getElementById("c5").value
 
 fetch(API,{
 method:"POST",
+mode:"no-cors",
 body:JSON.stringify(data)
 })
-.then(res=>res.text())
-.then(res=>{
+.catch(err=>console.log(err))
 
 alert("지원 완료")
 
 window.location.href="universities.html"
-
-})
 
 })
 
