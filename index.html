@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
+
 <head>
+
 <meta charset="UTF-8">
 <title>교환학생 모의지원 시스템</title>
 
@@ -75,9 +77,11 @@ line-height:1.6;
 
 어학 시험
 <select id="test">
+
 <option value="toefl">TOEFL</option>
 <option value="ielts">IELTS</option>
 <option value="inst">기관TOEFL</option>
+
 </select>
 
 어학 점수
@@ -87,42 +91,57 @@ line-height:1.6;
 
 1지망
 <select id="uni1">
+
+<option value="">선택 안 함</option>
 <option>Tokyo University</option>
 <option>National Taiwan University</option>
 <option>University of Amsterdam</option>
 <option>University of Sydney</option>
+
 </select>
 
 2지망
 <select id="uni2">
+
+<option value="">선택 안 함</option>
 <option>Tokyo University</option>
 <option>National Taiwan University</option>
 <option>University of Amsterdam</option>
 <option>University of Sydney</option>
+
 </select>
 
 3지망
 <select id="uni3">
+
+<option value="">선택 안 함</option>
 <option>Tokyo University</option>
 <option>National Taiwan University</option>
 <option>University of Amsterdam</option>
 <option>University of Sydney</option>
+
 </select>
 
 4지망
 <select id="uni4">
+
+<option value="">선택 안 함</option>
 <option>Tokyo University</option>
 <option>National Taiwan University</option>
 <option>University of Amsterdam</option>
 <option>University of Sydney</option>
+
 </select>
 
 5지망
 <select id="uni5">
+
+<option value="">선택 안 함</option>
 <option>Tokyo University</option>
 <option>National Taiwan University</option>
 <option>University of Amsterdam</option>
 <option>University of Sydney</option>
+
 </select>
 
 <button onclick="calculate()">지원하기</button>
@@ -135,18 +154,21 @@ line-height:1.6;
 
 /* IELTS → TOEFL 환산 */
 
-const ieltsToefl={
+const ieltsToefl = {
+
 9:120,
 8:112,
 7.5:107,
 7:99,
 6.5:92,
 6:80
+
 }
 
 /* 기관토플 → TOEFL 환산 */
 
-const instToefl={
+const instToefl = {
+
 677:120,673:120,670:119,667:118,663:117,657:116,
 653:115,650:114,647:113,643:112,640:111,637:110,
 633:109,630:108,627:107,623:106,620:105,617:104,
@@ -154,6 +176,7 @@ const instToefl={
 593:97,590:96,587:95,583:93,580:92,577:91,
 573:89,570:88,567:87,563:85,560:83,557:82,
 553:81,550:80
+
 }
 
 function convertLanguage(test,score){
@@ -170,23 +193,27 @@ return ieltsToefl[score] || 0
 
 if(test=="inst"){
 
-let keys=Object.keys(instToefl).map(Number).sort((a,b)=>b-a)
+let keys = Object.keys(instToefl).map(Number).sort((a,b)=>b-a)
 
 for(let k of keys){
+
 if(score>=k){
 return instToefl[k]
 }
+
 }
 
 }
 
 return 0
+
 }
 
 function calculate(){
 
 let name=document.getElementById("name").value
 let gpa=parseFloat(document.getElementById("gpa").value)
+
 let test=document.getElementById("test").value
 let language=document.getElementById("language").value
 
@@ -198,7 +225,7 @@ let uni5=document.getElementById("uni5").value
 
 let converted=convertLanguage(test,language)
 
-/* 학점 점수 (4.3 기준 50점) */
+/* 학점 점수 */
 
 let gpaScore=(gpa/4.3)*50
 
@@ -212,23 +239,26 @@ let total=gpaScore+languageScore+10
 
 document.getElementById("result").innerHTML=
 
-"<b>"+name+"</b><br>"+
-"환산 TOEFL 점수: "+converted+"<br>"+
-"학점 점수: "+gpaScore.toFixed(2)+"<br>"+
-"어학 점수: "+languageScore.toFixed(2)+"<br>"+
-"자소서 점수: 10<br>"+
-"<b>총점: "+total.toFixed(2)+"</b><br><br>"+
+"<b>"+name+"</b><br><br>"+
+
+"환산 TOEFL 점수 : "+converted+"<br>"+
+"학점 점수 : "+gpaScore.toFixed(2)+"<br>"+
+"어학 점수 : "+languageScore.toFixed(2)+"<br>"+
+"자소서 점수 : 10<br><br>"+
+
+"<b>총점 : "+total.toFixed(2)+"</b><br><br>"+
 
 "지원 대학<br>"+
-"1지망: "+uni1+"<br>"+
-"2지망: "+uni2+"<br>"+
-"3지망: "+uni3+"<br>"+
-"4지망: "+uni4+"<br>"+
-"5지망: "+uni5
+"1지망 : "+uni1+"<br>"+
+"2지망 : "+uni2+"<br>"+
+"3지망 : "+uni3+"<br>"+
+"4지망 : "+uni4+"<br>"+
+"5지망 : "+uni5
 
 }
 
 </script>
 
 </body>
+
 </html>
