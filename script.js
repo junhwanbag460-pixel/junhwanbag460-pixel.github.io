@@ -1,4 +1,4 @@
-const API="APPS_SCRIPT_URL"
+const API="https://script.google.com/macros/s/AKfycbzknnOviKE3zsA3-SeiJU5F9JMRB_DkiBAy-0w1uIfdh2DQa5xvFtEiSRGAxrAufVSS/exec"
 
 function calculate(gpa,language,score){
 
