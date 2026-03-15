@@ -1,212 +1,55 @@
 <!DOCTYPE html>
 <html>
-<head>
 
+<head>
 <meta charset="UTF-8">
-<title>경희대학교 교환학생 모의지원</title>
+<title>Exchange Application</title>
 
 <script src="https://accounts.google.com/gsi/client" async defer></script>
-
-<style>
-
-body{
-font-family:Arial;
-max-width:700px;
-margin:auto;
-padding:40px;
-}
-
-input,select{
-width:100%;
-padding:8px;
-margin:6px 0;
-}
-
-button{
-padding:10px;
-margin-top:10px;
-}
-
-</style>
 
 </head>
 
 <body>
 
-<h2>경희대학교 교환학생 모의지원</h2>
+<h1>교환학생 모의지원</h1>
 
-<div id="loginBtn"></div>
+<div id="g_id_onload"
+data-client_id="GOOGLE_CLIENT_ID"
+data-context="signin"
+data-ux_mode="popup"
+data-callback="handleCredentialResponse">
+</div>
 
-<p id="userEmail"></p>
-
-<h3>지원 정보 입력</h3>
-
-이름
-<input id="name">
-
-GPA (4.3)
-<input id="gpa" type="number" step="0.01">
-
-어학 시험
-<select id="language">
-<option value="toefl">TOEFL</option>
-<option value="ielts">IELTS</option>
-<option value="institution">기관토플</option>
-</select>
-
-어학 점수
-<input id="langScore" type="number">
-
-<h3>지원 대학</h3>
-
-<select id="uni1">
-<option value="">1지망 선택</option>
-<option>Tokyo University</option>
-<option>National Taiwan University</option>
-<option>Kyoto University</option>
-<option>University of Amsterdam</option>
-<option>University of Toronto</option>
-</select>
-
-<select id="uni2">
-<option value="">2지망 선택</option>
-<option>Tokyo University</option>
-<option>National Taiwan University</option>
-<option>Kyoto University</option>
-<option>University of Amsterdam</option>
-<option>University of Toronto</option>
-</select>
-
-<select id="uni3">
-<option value="">3지망 선택</option>
-<option>Tokyo University</option>
-<option>National Taiwan University</option>
-<option>Kyoto University</option>
-<option>University of Amsterdam</option>
-<option>University of Toronto</option>
-</select>
-
-<select id="uni4">
-<option value="">4지망 선택</option>
-<option>Tokyo University</option>
-<option>National Taiwan University</option>
-<option>Kyoto University</option>
-<option>University of Amsterdam</option>
-<option>University of Toronto</option>
-</select>
-
-<select id="uni5">
-<option value="">5지망 선택</option>
-<option>Tokyo University</option>
-<option>National Taiwan University</option>
-<option>Kyoto University</option>
-<option>University of Amsterdam</option>
-<option>University of Toronto</option>
-</select>
-
-<button onclick="submitForm()">지원 제출</button>
+<div class="g_id_signin"></div>
 
 <script>
 
-let email=""
+function handleCredentialResponse(response){
 
-window.onload=function(){
+const data=parseJwt(response.credential)
 
-google.accounts.id.initialize({
-client_id:"921438929134-p78aqn2dv6p9mka6orajf0c6c841qrnj.apps.googleusercontent.com",
-callback:loginHandler,
-auto_select:false
-})
-
-google.accounts.id.renderButton(
-document.getElementById("loginBtn"),
-{
-theme:"outline",
-size:"large",
-type:"standard",
-text:"signin_with",
-logo_alignment:"left"
-}
-)
-
-}
-
-function loginHandler(response){
-
-const data=JSON.parse(atob(response.credential.split('.')[1]))
-
-email=data.email
-
-if(!email.endsWith("@khu.ac.kr")){
+if(!data.email.endsWith("@khu.ac.kr")){
 alert("경희대학교 이메일만 로그인 가능합니다")
 return
 }
 
-document.getElementById("userEmail").innerText="로그인: "+email
+localStorage.setItem("email",data.email)
+
+window.location.href="apply.html"
 
 }
 
-function calculateScore(){
-
-let gpa=document.getElementById("gpa").value
-let gpaScore=(gpa/4.3)*50
-
-let type=document.getElementById("language").value
-let lang=document.getElementById("langScore").value
-
-let langScore=0
-
-if(type=="toefl") langScore=(lang/120)*40
-if(type=="ielts") langScore=(lang/9)*40
-if(type=="institution") langScore=(lang/677)*40
-
-return gpaScore+langScore+10
-
-}
-
-function submitForm(){
-
-if(email==""){
-alert("먼저 로그인하세요")
-return
-}
-
-let total=calculateScore()
-
-let data={
-
-email:email,
-name:document.getElementById("name").value,
-gpa:document.getElementById("gpa").value,
-language:document.getElementById("language").value,
-score:total,
-
-uni1:document.getElementById("uni1").value,
-uni2:document.getElementById("uni2").value,
-uni3:document.getElementById("uni3").value,
-uni4:document.getElementById("uni4").value,
-uni5:document.getElementById("uni5").value
-
-}
-
-fetch("https://script.google.com/macros/s/AKfycbwESU3boFchpmUqo6oMj4_JM0c92nzFsL2kUgjWomp1av9Ywa9783-tP7zjZB-EY0VN/exec",{
-method:"POST",
-body:JSON.stringify(data)
-})
-.then(res=>res.text())
-.then(result=>{
-
-if(result=="updated"){
-alert("지원 대학 수정 완료")
-}else{
-alert("지원 완료")
-}
-
-})
-
+function parseJwt (token){
+var base64Url=token.split('.')[1]
+var base64=base64Url.replace(/-/g,'+').replace(/_/g,'/')
+var jsonPayload=decodeURIComponent(atob(base64).split('').map(function(c){
+return '%'+('00'+c.charCodeAt(0).toString(16)).slice(-2)
+}).join(''))
+return JSON.parse(jsonPayload)
 }
 
 </script>
 
 </body>
+
 </html>
