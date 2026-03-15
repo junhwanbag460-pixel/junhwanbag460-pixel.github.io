@@ -1,7 +1,4 @@
-console.log("script loaded")
-
-const API="https://script.google.com/macros/s/AKfycbzknnOviKE3zsA3-SeiJU5F9JMRB_DkiBAy-0w1uIfdh2DQa5xvFtEiSRGAxrAufVSS/exec"
-
+const API="APPS_SCRIPT_URL"
 
 function calculate(gpa,language,score){
 
@@ -17,9 +14,11 @@ return gpaScore+lang+10
 
 }
 
+document.addEventListener("DOMContentLoaded",function(){
 
+const form=document.getElementById("form")
 
-document.getElementById("form").addEventListener("submit",function(e){
+form.addEventListener("submit",function(e){
 
 e.preventDefault()
 
@@ -59,6 +58,8 @@ body:JSON.stringify(data)
 alert("지원 완료")
 
 window.location.href="universities.html"
+
+})
 
 })
 
