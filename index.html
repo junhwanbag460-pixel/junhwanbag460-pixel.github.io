@@ -39,7 +39,7 @@ display:none;
 
 <h2>경희대학교 교환학생 모의지원</h2>
 
-<div id="login"></div>
+<div id="loginBtn"></div>
 
 <div id="form">
 
@@ -83,11 +83,12 @@ window.onload=function(){
 
 google.accounts.id.initialize({
 client_id:"921438929134-p78aqn2dv6p9mka6orajf0c6c841qrnj.apps.googleusercontent.com",
-callback:handleCredentialResponse
+callback:handleCredentialResponse,
+auto_select:false
 })
 
 google.accounts.id.renderButton(
-document.getElementById("login"),
+document.getElementById("loginBtn"),
 {theme:"outline",size:"large"}
 )
 
@@ -104,7 +105,7 @@ alert("경희대학교 이메일만 로그인 가능합니다")
 return
 }
 
-document.getElementById("login").style.display="none"
+document.getElementById("loginBtn").style.display="none"
 document.getElementById("form").style.display="block"
 
 document.getElementById("emailDisplay").innerText="로그인: "+email
@@ -167,7 +168,7 @@ body:JSON.stringify(data)
 .then(result=>{
 
 if(result=="updated"){
-alert("지원 대학이 수정되었습니다")
+alert("지원 대학 수정 완료")
 }else{
 alert("지원 완료")
 }
