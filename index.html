@@ -1,12 +1,9 @@
 <!DOCTYPE html>
 <html>
-
 <head>
 <meta charset="UTF-8">
 <title>Exchange Application</title>
-
 <script src="https://accounts.google.com/gsi/client" async defer></script>
-
 </head>
 
 <body>
@@ -14,7 +11,7 @@
 <h1>교환학생 모의지원</h1>
 
 <div id="g_id_onload"
-data-client_id="921438929134-p78aqn2dv6p9mka6orajf0c6c841qrnj.apps.googleusercontent.com"
+data-client_id="GOOGLE_CLIENT_ID"
 data-context="signin"
 data-ux_mode="popup"
 data-callback="handleCredentialResponse">
@@ -29,7 +26,7 @@ function handleCredentialResponse(response){
 const data=parseJwt(response.credential)
 
 if(!data.email.endsWith("@khu.ac.kr")){
-alert("경희대학교 이메일만 로그인 가능합니다")
+alert("경희대학교 이메일로 로그인하세요")
 return
 }
 
@@ -51,5 +48,4 @@ return JSON.parse(jsonPayload)
 </script>
 
 </body>
-
 </html>
