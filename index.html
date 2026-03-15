@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
-
 <head>
 
 <meta charset="UTF-8">
+
 <title>교환학생 모의지원 시스템</title>
 
 <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -11,8 +11,8 @@
 <style>
 
 body{
-font-family:Arial;
-background:#f4f6f8;
+font-family: Arial;
+background:#f4f6f9;
 margin:0;
 }
 
@@ -21,41 +21,34 @@ background:#2c3e50;
 color:white;
 padding:20px;
 text-align:center;
-font-size:28px;
+font-size:26px;
 }
 
 .container{
-width:700px;
-margin:auto;
+width:600px;
+margin:40px auto;
 background:white;
 padding:30px;
-margin-top:40px;
 border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
 }
 
 input,select{
 width:100%;
 padding:10px;
 margin:10px 0;
+font-size:15px;
 }
 
 button{
+width:100%;
+padding:12px;
 background:#3498db;
 color:white;
 border:none;
-padding:12px;
-width:100%;
 font-size:16px;
 border-radius:5px;
 cursor:pointer;
-}
-
-.uni{
-margin-top:10px;
-padding:10px;
-background:#e3f2fd;
-cursor:pointer;
-border-radius:6px;
 }
 
 </style>
@@ -65,25 +58,22 @@ border-radius:6px;
 <body>
 
 <header>
-교환학생 모의지원 시스템
+
+교환학생 모의지원 사이트
+
 </header>
 
 <div class="container">
 
 <h3>경희대학교 이메일 로그인</h3>
 
-<div id="g_id_onload"
- data-client_id="921438929134-p78aqn2dv6p9mka6orajf0c6c841qrnj.apps.googleusercontent.com"
- data-callback="handleCredentialResponse">
-</div>
-
-<div class="g_id_signin"></div>
+<div id="loginDiv"></div>
 
 <p id="loginStatus">로그인 필요</p>
 
 <hr>
 
-<h2>지원 정보 입력</h2>
+<h3>지원 정보 입력</h3>
 
 이름
 <input id="name">
@@ -92,222 +82,184 @@ border-radius:6px;
 <input id="gpa">
 
 어학 시험
-<select id="test">
+<select id="language">
 <option value="toefl">TOEFL</option>
 <option value="ielts">IELTS</option>
-<option value="inst">기관TOEFL</option>
+<option value="institution">기관토플</option>
 </select>
 
 어학 점수
-<input id="language">
+<input id="score">
 
-<h3>지원 대학</h3>
+<h4>지원 대학 선택</h4>
 
 1지망
-<input id="uni1">
+<select id="uni1">
+<option></option>
+<option>University A</option>
+<option>University B</option>
+<option>University C</option>
+</select>
 
 2지망
-<input id="uni2">
+<select id="uni2">
+<option></option>
+<option>University A</option>
+<option>University B</option>
+<option>University C</option>
+</select>
 
 3지망
-<input id="uni3">
+<select id="uni3">
+<option></option>
+<option>University A</option>
+<option>University B</option>
+<option>University C</option>
+</select>
 
-<button onclick="calculate()">지원하기</button>
+4지망
+<select id="uni4">
+<option></option>
+<option>University A</option>
+<option>University B</option>
+<option>University C</option>
+</select>
 
-<div id="result"></div>
-<div id="analysis"></div>
+5지망
+<select id="uni5">
+<option></option>
+<option>University A</option>
+<option>University B</option>
+<option>University C</option>
+</select>
+
+<button onclick="submitApplication()">
+
+지원하기
+
+</button>
 
 </div>
 
 <script>
 
-let userEmail=""
-let loggedIn=false
-let myScore=0
+let userEmail="";
+
+window.onload=function(){
+
+google.accounts.id.initialize({
+client_id:"921438929134-p78aqn2dv6p9mka6orajf0c6c841qrnj.apps.googleusercontent.com",
+callback:handleCredentialResponse
+});
+
+google.accounts.id.renderButton(
+document.getElementById("loginDiv"),
+{ theme:"outline", size:"large"}
+);
+
+google.accounts.id.prompt();
+
+}
 
 function handleCredentialResponse(response){
 
-const data = JSON.parse(atob(response.credential.split('.')[1]))
-let email=data.email
+const data=parseJwt(response.credential);
 
-if(!email.endsWith("@khu.ac.kr")){
+if(!data.email.endsWith("@khu.ac.kr")){
+alert("경희대학교 이메일만 사용 가능합니다.");
+return;
+}
 
-alert("경희대학교 이메일만 로그인 가능합니다")
-return
+userEmail=data.email;
+
+document.getElementById("loginStatus").innerText="로그인됨: "+userEmail;
 
 }
 
-userEmail=email
-loggedIn=true
+function parseJwt(token){
 
-document.getElementById("loginStatus").innerText="로그인: "+email
+var base64Url=token.split('.')[1];
+var base64=base64Url.replace(/-/g,'+').replace(/_/g,'/');
+var jsonPayload=decodeURIComponent(atob(base64).split('').map(function(c){
+return '%'+('00'+c.charCodeAt(0).toString(16)).slice(-2);
+}).join(''));
 
-}
-
-/* IELTS 환산 */
-
-const ieltsToefl={
-9:120,
-8:112,
-7.5:107,
-7:99,
-6.5:92,
-6:80
-}
-
-/* 기관토플 환산 */
-
-const instToefl={
-677:120,673:120,670:119,667:118,663:117,657:116,
-653:115,650:114,647:113,643:112,640:111,637:110,
-633:109,630:108,627:107,623:106,620:105,617:104,
-613:103,610:102,607:101,603:100,600:99,597:98
-}
-
-function convertLanguage(test,score){
-
-score=parseFloat(score)
-
-if(test=="toefl") return score
-
-if(test=="ielts") return ieltsToefl[score]||0
-
-if(test=="inst"){
-
-let keys=Object.keys(instToefl).map(Number).sort((a,b)=>b-a)
-
-for(let k of keys){
-
-if(score>=k){
-return instToefl[k]
-}
+return JSON.parse(jsonPayload);
 
 }
 
+function calculateScore(gpa,language,score){
+
+let gpaScore=(gpa/4.3)*50;
+
+let langScore=0;
+
+if(language=="toefl"){
+langScore=(score/120)*40;
 }
 
-return 0
+if(language=="ielts"){
+langScore=(score/9)*40;
+}
+
+if(language=="institution"){
+langScore=(score/677)*40;
+}
+
+let essayScore=10;
+
+return gpaScore+langScore+essayScore;
 
 }
 
-/* 데이터 저장 */
+function submitApplication(){
 
-async function saveData(data){
+if(userEmail==""){
+alert("로그인 먼저 하세요");
+return;
+}
 
-await fetch("https://script.google.com/macros/s/AKfycbwESU3boFchpmUqo6oMj4_JM0c92nzFsL2kUgjWomp1av9Ywa9783-tP7zjZB-EY0VN/exec",{
+let name=document.getElementById("name").value;
+let gpa=parseFloat(document.getElementById("gpa").value);
+let language=document.getElementById("language").value;
+let score=parseFloat(document.getElementById("score").value);
+
+let uni1=document.getElementById("uni1").value;
+let uni2=document.getElementById("uni2").value;
+let uni3=document.getElementById("uni3").value;
+let uni4=document.getElementById("uni4").value;
+let uni5=document.getElementById("uni5").value;
+
+let total=calculateScore(gpa,language,score);
+
+let data={
+email:userEmail,
+name:name,
+gpa:gpa,
+language:language,
+score:score,
+total:total,
+uni1:uni1,
+uni2:uni2,
+uni3:uni3,
+uni4:uni4,
+uni5:uni5
+};
+
+fetch("YOUR_SCRIPT_URL",{
 
 method:"POST",
 body:JSON.stringify(data)
 
 })
+.then(res=>res.text())
+.then(res=>{
 
-}
+alert("지원 완료");
 
-function calculate(){
+window.location.href="result.html?email="+userEmail;
 
-if(!loggedIn){
-
-alert("먼저 로그인하세요")
-return
-
-}
-
-let name=document.getElementById("name").value
-let gpa=parseFloat(document.getElementById("gpa").value)
-
-let test=document.getElementById("test").value
-let language=document.getElementById("language").value
-
-let uni1=document.getElementById("uni1").value
-let uni2=document.getElementById("uni2").value
-let uni3=document.getElementById("uni3").value
-
-let converted=convertLanguage(test,language)
-
-let gpaScore=(gpa/4.3)*50
-let languageScore=converted*0.4
-
-myScore=gpaScore+languageScore+10
-
-saveData({
-
-email:userEmail,
-name:name,
-gpa:gpa,
-language:converted,
-score:myScore,
-uni1:uni1,
-uni2:uni2,
-uni3:uni3
-
-})
-
-document.getElementById("result").innerHTML=
-
-"<h2>지원 결과</h2>"+
-"총점: "+myScore.toFixed(2)+"<br><br>"+
-"<b>지원 대학</b>"
-
-let list=[uni1,uni2,uni3]
-
-list.forEach(uni=>{
-
-if(uni){
-
-let div=document.createElement("div")
-div.className="uni"
-div.innerText=uni
-
-div.onclick=function(){
-analyzeUniversity(uni)
-}
-
-document.getElementById("result").appendChild(div)
-
-}
-
-})
-
-}
-
-/* 대학 분석 */
-
-function analyzeUniversity(uni){
-
-const url="https://script.google.com/macros/s/AKfycbwESU3boFchpmUqo6oMj4_JM0c92nzFsL2kUgjWomp1av9Ywa9783-tP7zjZB-EY0VN/exec"
-
-fetch(url)
-.then(res=>res.json())
-.then(data=>{
-
-let applicants=[]
-
-data.forEach(row=>{
-
-if(row[3]==uni||row[4]==uni||row[5]==uni){
-
-applicants.push(row[2])
-
-}
-
-})
-
-applicants.sort((a,b)=>b-a)
-
-let rank=applicants.findIndex(s=>s<=myScore)+1
-
-let total=applicants.length
-
-let percent=Math.round((rank/total)*100)
-
-document.getElementById("analysis").innerHTML=
-
-"<h3>"+uni+" 분석</h3>"+
-"지원자 수: "+total+"<br>"+
-"내 순위: "+rank+"위<br>"+
-"상위 "+percent+"%"
-
-})
+});
 
 }
 
