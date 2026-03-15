@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+
+<h2 id="title"></h2>
+
+<script>
+
+const params=new URLSearchParams(location.search)
+
+const uni=params.get("name")
+
+document.getElementById("title").innerText=uni
+
+</script>
+
+</body>
+
+</html>
