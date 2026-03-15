@@ -17,9 +17,9 @@
 const API="APPS_SCRIPT_URL"
 
 const slots={
+"SMU":2,
 "Tokyo University":2,
-"National Taiwan University":2,
-"HKUST":2
+"National Taiwan University":2
 }
 
 async function load(){
@@ -30,6 +30,11 @@ const data=await res.json()
 const email=localStorage.getItem("email")
 
 const me=data.find(r=>r[0]==email)
+
+if(!me){
+document.getElementById("result").innerHTML="지원 정보 없음"
+return
+}
 
 const total=parseFloat(me[5])
 
@@ -55,8 +60,8 @@ html+=`
 
 <h3>${uni}</h3>
 
-내 점수 : ${total}<br>
-내 순위 : ${rank}/${applicants.length}<br>
+점수 : ${total}<br>
+순위 : ${rank}/${applicants.length}<br>
 결과 : ${result}
 
 <hr>
@@ -74,5 +79,4 @@ load()
 </script>
 
 </body>
-
 </html>
