@@ -1,4 +1,4 @@
-const API = "https://script.google.com/macros/s/AKfycbzknnOviKE3zsA3-SeiJU5F9JMRB_DkiBAy-0w1uIfdh2DQa5xvFtEiSRGAxrAufVSS/exec";
+const API = "https://script.google.com/macros/s/AKfycbxTSgpUBvQNNvkjOpPojZh1teJtFvuO-OhGQTBsE4eYlHVaBtaHKBZwOxap0pMOeaI_/exec";
 
 function calculate(gpa,language,score){
 
@@ -18,11 +18,23 @@ document.addEventListener("DOMContentLoaded",function(){
 
 const form=document.getElementById("form")
 
+if(!form){
+console.error("form not found")
+return
+}
+
 form.addEventListener("submit",function(e){
 
 e.preventDefault()
 
 const email=localStorage.getItem("email")
+
+// 로그인 안 된 경우
+if(!email){
+alert("로그인이 필요합니다")
+window.location.href="index.html"
+return
+}
 
 const name=document.getElementById("name").value
 const gpa=parseFloat(document.getElementById("gpa").value)
@@ -48,6 +60,7 @@ choice5:document.getElementById("c5").value
 
 }
 
+// 데이터 전송
 fetch(API,{
 method:"POST",
 mode:"no-cors",
