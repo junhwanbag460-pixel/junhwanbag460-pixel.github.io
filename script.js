@@ -1,4 +1,7 @@
-const API="https://script.google.com/macros/s/AKfycbzxjV02UQG6rjGiKuCgcL9Q3uut6Ep2rvjCVRta7YNQ3bcWJwUlaksd_ttX6s3BAh0o/exec"
+console.log("script loaded")
+
+const API="https://script.google.com/macros/s/AKfycbzknnOviKE3zsA3-SeiJU5F9JMRB_DkiBAy-0w1uIfdh2DQa5xvFtEiSRGAxrAufVSS/exec"
+
 
 function calculate(gpa,language,score){
 
@@ -13,6 +16,8 @@ if(language=="ITP") lang=(score/677)*40
 return gpaScore+lang+10
 
 }
+
+
 
 document.getElementById("form").addEventListener("submit",function(e){
 
@@ -51,7 +56,7 @@ body:JSON.stringify(data)
 .then(res=>res.text())
 .then(res=>{
 
-alert("지원이 완료되었습니다")
+alert("지원 완료")
 
 window.location.href="universities.html"
 
