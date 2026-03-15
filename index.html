@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html>
-
 <head>
 
 <meta charset="UTF-8">
-<title>KHU Exchange Simulator</title>
+<title>경희대학교 교환학생 모의지원</title>
 
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 
@@ -14,13 +13,13 @@ body{
 font-family:Arial;
 max-width:700px;
 margin:auto;
-padding:30px;
+padding:40px;
 }
 
 input,select{
 width:100%;
 padding:8px;
-margin:5px 0;
+margin:6px 0;
 }
 
 button{
@@ -40,42 +39,25 @@ display:none;
 
 <h2>경희대학교 교환학생 모의지원</h2>
 
-<div id="loginSection">
-
-<div id="g_id_onload"
-data-client_id="921438929134-p78aqn2dv6p9mka6orajf0c6c841qrnj.apps.googleusercontent.com"
-data-callback="handleCredentialResponse"
-data-auto_prompt="false"
-data-auto_select="false">
-</div>
-
-<div class="g_id_signin"
-data-type="standard"
-data-size="large">
-</div>
-
-</div>
+<div id="login"></div>
 
 <div id="form">
 
-<p id="userEmail"></p>
+<p id="emailDisplay"></p>
 
 <h3>지원 정보 입력</h3>
 
 이름
 <input id="name">
 
-학점 (4.3 만점)
+학점 (4.3)
 <input id="gpa" type="number" step="0.01">
 
 어학 시험
-
 <select id="language">
-
 <option value="toefl">TOEFL</option>
 <option value="ielts">IELTS</option>
 <option value="institution">기관토플</option>
-
 </select>
 
 어학 점수
@@ -97,46 +79,60 @@ data-size="large">
 
 let email=""
 
+window.onload=function(){
+
+google.accounts.id.initialize({
+client_id:"921438929134-p78aqn2dv6p9mka6orajf0c6c841qrnj.apps.googleusercontent.com",
+callback:handleCredentialResponse
+})
+
+google.accounts.id.renderButton(
+document.getElementById("login"),
+{theme:"outline",size:"large"}
+)
+
+}
+
 function handleCredentialResponse(response){
 
-const data = JSON.parse(atob(response.credential.split('.')[1]))
+const data=JSON.parse(atob(response.credential.split('.')[1]))
 
-email = data.email
+email=data.email
 
 if(!email.endsWith("@khu.ac.kr")){
 alert("경희대학교 이메일만 로그인 가능합니다")
 return
 }
 
-document.getElementById("loginSection").style.display="none"
+document.getElementById("login").style.display="none"
 document.getElementById("form").style.display="block"
 
-document.getElementById("userEmail").innerText="로그인됨: "+email
+document.getElementById("emailDisplay").innerText="로그인: "+email
 
 }
 
 function calculateScore(){
 
-let gpa = Number(document.getElementById("gpa").value)
+let gpa=Number(document.getElementById("gpa").value)
 
-let gpaScore = (gpa/4.3)*50
+let gpaScore=(gpa/4.3)*50
 
-let language = document.getElementById("language").value
+let type=document.getElementById("language").value
 
-let score = Number(document.getElementById("languageScore").value)
+let lang=Number(document.getElementById("languageScore").value)
 
 let langScore=0
 
-if(language=="toefl"){
-langScore=(score/120)*40
+if(type=="toefl"){
+langScore=(lang/120)*40
 }
 
-if(language=="ielts"){
-langScore=(score/9)*40
+if(type=="ielts"){
+langScore=(lang/9)*40
 }
 
-if(language=="institution"){
-langScore=(score/677)*40
+if(type=="institution"){
+langScore=(lang/677)*40
 }
 
 return gpaScore+langScore+10
@@ -145,7 +141,7 @@ return gpaScore+langScore+10
 
 function submitForm(){
 
-let totalScore = calculateScore()
+let total=calculateScore()
 
 let data={
 
@@ -153,7 +149,7 @@ email:email,
 name:document.getElementById("name").value,
 gpa:document.getElementById("gpa").value,
 language:document.getElementById("language").value,
-score:totalScore,
+score:total,
 
 uni1:document.getElementById("uni1").value,
 uni2:document.getElementById("uni2").value,
@@ -164,19 +160,16 @@ uni5:document.getElementById("uni5").value
 }
 
 fetch("https://script.google.com/macros/s/AKfycbwESU3boFchpmUqo6oMj4_JM0c92nzFsL2kUgjWomp1av9Ywa9783-tP7zjZB-EY0VN/exec",{
-
 method:"POST",
 body:JSON.stringify(data)
-
 })
-
 .then(res=>res.text())
 .then(result=>{
 
 if(result=="updated"){
 alert("지원 대학이 수정되었습니다")
 }else{
-alert("지원이 완료되었습니다")
+alert("지원 완료")
 }
 
 })
@@ -186,5 +179,4 @@ alert("지원이 완료되었습니다")
 </script>
 
 </body>
-
 </html>
