@@ -91,57 +91,47 @@ line-height:1.6;
 
 1지망
 <select id="uni1">
-
 <option value="">선택 안 함</option>
 <option>Tokyo University</option>
 <option>National Taiwan University</option>
 <option>University of Amsterdam</option>
 <option>University of Sydney</option>
-
 </select>
 
 2지망
 <select id="uni2">
-
 <option value="">선택 안 함</option>
 <option>Tokyo University</option>
 <option>National Taiwan University</option>
 <option>University of Amsterdam</option>
 <option>University of Sydney</option>
-
 </select>
 
 3지망
 <select id="uni3">
-
 <option value="">선택 안 함</option>
 <option>Tokyo University</option>
 <option>National Taiwan University</option>
 <option>University of Amsterdam</option>
 <option>University of Sydney</option>
-
 </select>
 
 4지망
 <select id="uni4">
-
 <option value="">선택 안 함</option>
 <option>Tokyo University</option>
 <option>National Taiwan University</option>
 <option>University of Amsterdam</option>
 <option>University of Sydney</option>
-
 </select>
 
 5지망
 <select id="uni5">
-
 <option value="">선택 안 함</option>
 <option>Tokyo University</option>
 <option>National Taiwan University</option>
 <option>University of Amsterdam</option>
 <option>University of Sydney</option>
-
 </select>
 
 <button onclick="calculate()">지원하기</button>
@@ -151,6 +141,19 @@ line-height:1.6;
 </div>
 
 <script>
+
+
+async function saveData(data){
+
+await fetch("https://script.google.com/macros/s/AKfycbwESU3boFchpmUqo6oMj4_JM0c92nzFsL2kUgjWomp1av9Ywa9783-tP7zjZB-EY0VN/exec",{
+
+method:"POST",
+body:JSON.stringify(data)
+
+});
+
+}
+
 
 /* IELTS → TOEFL 환산 */
 
@@ -165,6 +168,7 @@ const ieltsToefl = {
 
 }
 
+
 /* 기관토플 → TOEFL 환산 */
 
 const instToefl = {
@@ -178,6 +182,7 @@ const instToefl = {
 553:81,550:80
 
 }
+
 
 function convertLanguage(test,score){
 
@@ -209,6 +214,7 @@ return 0
 
 }
 
+
 function calculate(){
 
 let name=document.getElementById("name").value
@@ -223,19 +229,16 @@ let uni3=document.getElementById("uni3").value
 let uni4=document.getElementById("uni4").value
 let uni5=document.getElementById("uni5").value
 
+
 let converted=convertLanguage(test,language)
 
-/* 학점 점수 */
 
 let gpaScore=(gpa/4.3)*50
 
-/* 어학 점수 */
-
 let languageScore=converted*0.4
 
-/* 총점 */
-
 let total=gpaScore+languageScore+10
+
 
 document.getElementById("result").innerHTML=
 
@@ -254,6 +257,21 @@ document.getElementById("result").innerHTML=
 "3지망 : "+uni3+"<br>"+
 "4지망 : "+uni4+"<br>"+
 "5지망 : "+uni5
+
+
+saveData({
+
+name:name,
+gpa:gpa,
+language:converted,
+score:total,
+uni1:uni1,
+uni2:uni2,
+uni3:uni3,
+uni4:uni4,
+uni5:uni5
+
+})
 
 }
 
