@@ -3,19 +3,200 @@
 
 <body>
 
-<h2>대학교 목록</h2>
+<h2>내 지원 대학</h2>
+<div id="my"></div>
 
-<div onclick="go('SMU')">SMU</div>
-<div onclick="go('Tokyo')">Tokyo University</div>
-<div onclick="go('NTU')">NTU</div>
+<h2>전체 대학 목록</h2>
+<div id="all"></div>
 
 <script>
+
+const API="<!DOCTYPE html>
+<html>
+
+<body>
+
+<h2>내 지원 대학</h2>
+<div id="my"></div>
+
+<h2>전체 대학 목록</h2>
+<div id="all"></div>
+
+<script>
+
+const API="<!DOCTYPE html>
+<html>
+
+<body>
+
+<h2>내 지원 대학</h2>
+<div id="my"></div>
+
+<h2>전체 대학 목록</h2>
+<div id="all"></div>
+
+<script>
+
+const API="https://script.google.com/macros/s/AKfycbzz5pPUJuXWaWyUlYzFDYHQST_cyV_HGvHpad3HNjjM8rnkpktRecrC42sfjA6G5vsiiA/exec"
+
+async function load(){
+
+const res=await fetch(API)
+
+const data=await res.json()
+
+const apps=data.applications
+const universities=data.universities
+
+const email="test@khu.ac.kr"
+
+const me=apps.find(r=>r[0]==email)
+
+let myHTML=""
+
+for(let i=6;i<=10;i++){
+
+const uni=me[i]
+
+if(!uni) continue
+
+myHTML+=`<div onclick="go('${uni}')">${uni}</div>`
+
+}
+
+document.getElementById("my").innerHTML=myHTML
+
+let allHTML=""
+
+for(let i=1;i<universities.length;i++){
+
+const uni=universities[i][0]
+
+allHTML+=`<div onclick="go('${uni}')">${uni}</div>`
+
+}
+
+document.getElementById("all").innerHTML=allHTML
+
+}
 
 function go(name){
 
 window.location.href="university.html?name="+name
 
 }
+
+load()
+
+</script>
+
+</body>
+
+</html>"
+
+async function load(){
+
+const res=await fetch(API)
+
+const data=await res.json()
+
+const apps=data.applications
+const universities=data.universities
+
+const email="test@khu.ac.kr"
+
+const me=apps.find(r=>r[0]==email)
+
+let myHTML=""
+
+for(let i=6;i<=10;i++){
+
+const uni=me[i]
+
+if(!uni) continue
+
+myHTML+=`<div onclick="go('${uni}')">${uni}</div>`
+
+}
+
+document.getElementById("my").innerHTML=myHTML
+
+let allHTML=""
+
+for(let i=1;i<universities.length;i++){
+
+const uni=universities[i][0]
+
+allHTML+=`<div onclick="go('${uni}')">${uni}</div>`
+
+}
+
+document.getElementById("all").innerHTML=allHTML
+
+}
+
+function go(name){
+
+window.location.href="university.html?name="+name
+
+}
+
+load()
+
+</script>
+
+</body>
+
+</html>"
+
+async function load(){
+
+const res=await fetch(API)
+
+const data=await res.json()
+
+const apps=data.applications
+const universities=data.universities
+
+const email="test@khu.ac.kr"
+
+const me=apps.find(r=>r[0]==email)
+
+let myHTML=""
+
+for(let i=6;i<=10;i++){
+
+const uni=me[i]
+
+if(!uni) continue
+
+myHTML+=`<div onclick="go('${uni}')">${uni}</div>`
+
+}
+
+document.getElementById("my").innerHTML=myHTML
+
+let allHTML=""
+
+for(let i=1;i<universities.length;i++){
+
+const uni=universities[i][0]
+
+allHTML+=`<div onclick="go('${uni}')">${uni}</div>`
+
+}
+
+document.getElementById("all").innerHTML=allHTML
+
+}
+
+function go(name){
+
+window.location.href="university.html?name="+name
+
+}
+
+load()
 
 </script>
 
