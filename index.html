@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+
 <meta charset="UTF-8">
-<title>KHU Exchange</title>
+<title>경희대학교 교환학생 모의지원</title>
 
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 
@@ -10,7 +11,7 @@
 
 body{
 font-family:Arial;
-max-width:600px;
+max-width:700px;
 margin:auto;
 padding:40px;
 }
@@ -18,7 +19,7 @@ padding:40px;
 input,select{
 width:100%;
 padding:8px;
-margin:5px 0;
+margin:6px 0;
 }
 
 button{
@@ -36,15 +37,15 @@ margin-top:10px;
 
 <div id="loginBtn"></div>
 
-<div id="form">
-
 <p id="userEmail"></p>
+
+<h3>지원 정보 입력</h3>
 
 이름
 <input id="name">
 
 GPA (4.3)
-<input id="gpa">
+<input id="gpa" type="number" step="0.01">
 
 어학 시험
 <select id="language">
@@ -54,19 +55,56 @@ GPA (4.3)
 </select>
 
 어학 점수
-<input id="langScore">
+<input id="langScore" type="number">
 
 <h3>지원 대학</h3>
 
-<input id="uni1" placeholder="1지망">
-<input id="uni2" placeholder="2지망">
-<input id="uni3" placeholder="3지망">
-<input id="uni4" placeholder="4지망">
-<input id="uni5" placeholder="5지망">
+<select id="uni1">
+<option value="">1지망 선택</option>
+<option>Tokyo University</option>
+<option>National Taiwan University</option>
+<option>Kyoto University</option>
+<option>University of Amsterdam</option>
+<option>University of Toronto</option>
+</select>
 
-<button onclick="submitForm()">제출</button>
+<select id="uni2">
+<option value="">2지망 선택</option>
+<option>Tokyo University</option>
+<option>National Taiwan University</option>
+<option>Kyoto University</option>
+<option>University of Amsterdam</option>
+<option>University of Toronto</option>
+</select>
 
-</div>
+<select id="uni3">
+<option value="">3지망 선택</option>
+<option>Tokyo University</option>
+<option>National Taiwan University</option>
+<option>Kyoto University</option>
+<option>University of Amsterdam</option>
+<option>University of Toronto</option>
+</select>
+
+<select id="uni4">
+<option value="">4지망 선택</option>
+<option>Tokyo University</option>
+<option>National Taiwan University</option>
+<option>Kyoto University</option>
+<option>University of Amsterdam</option>
+<option>University of Toronto</option>
+</select>
+
+<select id="uni5">
+<option value="">5지망 선택</option>
+<option>Tokyo University</option>
+<option>National Taiwan University</option>
+<option>Kyoto University</option>
+<option>University of Amsterdam</option>
+<option>University of Toronto</option>
+</select>
+
+<button onclick="submitForm()">지원 제출</button>
 
 <script>
 
@@ -76,7 +114,8 @@ window.onload=function(){
 
 google.accounts.id.initialize({
 client_id:"921438929134-p78aqn2dv6p9mka6orajf0c6c841qrnj.apps.googleusercontent.com",
-callback:loginHandler
+callback:loginHandler,
+auto_select:false
 })
 
 google.accounts.id.renderButton(
@@ -129,16 +168,19 @@ return
 let total=calculateScore()
 
 let data={
+
 email:email,
 name:document.getElementById("name").value,
 gpa:document.getElementById("gpa").value,
 language:document.getElementById("language").value,
 score:total,
+
 uni1:document.getElementById("uni1").value,
 uni2:document.getElementById("uni2").value,
 uni3:document.getElementById("uni3").value,
 uni4:document.getElementById("uni4").value,
 uni5:document.getElementById("uni5").value
+
 }
 
 fetch("https://script.google.com/macros/s/AKfycbwESU3boFchpmUqo6oMj4_JM0c92nzFsL2kUgjWomp1av9Ywa9783-tP7zjZB-EY0VN/exec",{
@@ -147,7 +189,13 @@ body:JSON.stringify(data)
 })
 .then(res=>res.text())
 .then(result=>{
-alert("저장 완료")
+
+if(result=="updated"){
+alert("지원 대학 수정 완료")
+}else{
+alert("지원 완료")
+}
+
 })
 
 }
