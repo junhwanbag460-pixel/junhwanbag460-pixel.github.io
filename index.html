@@ -2,13 +2,13 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>교환학생 모의지원</title>
+<title>교환학생 모의지원 시스템</title>
 
 <style>
 
 body{
-font-family: Arial;
-background:#f5f5f5;
+font-family:Arial;
+background:#f4f6f8;
 margin:0;
 }
 
@@ -30,7 +30,7 @@ border-radius:10px;
 box-shadow:0 0 10px rgba(0,0,0,0.1);
 }
 
-input{
+input,select{
 width:100%;
 padding:10px;
 margin:10px 0;
@@ -45,10 +45,6 @@ width:100%;
 font-size:16px;
 cursor:pointer;
 border-radius:5px;
-}
-
-button:hover{
-background:#2980b9;
 }
 
 .result{
@@ -76,6 +72,13 @@ font-size:18px;
 학점
 <input id="gpa">
 
+어학시험 종류
+<select id="test">
+<option value="toefl">TOEFL</option>
+<option value="ielts">IELTS</option>
+<option value="inst">기관TOEFL</option>
+</select>
+
 어학점수
 <input id="language">
 
@@ -87,16 +90,37 @@ font-size:18px;
 
 <script>
 
+function convertLanguage(test,score){
+
+score=parseFloat(score);
+
+if(test=="toefl"){
+return score;
+}
+
+if(test=="ielts"){
+return score*12;
+}
+
+if(test=="inst"){
+return (score-550)*0.2+80;
+}
+
+}
+
 function calculate(){
 
 var name=document.getElementById("name").value;
 var gpa=parseFloat(document.getElementById("gpa").value);
-var language=parseFloat(document.getElementById("language").value);
+var test=document.getElementById("test").value;
+var language=document.getElementById("language").value;
 
-var score=(gpa*50)+(language*0.4)+10;
+var converted=convertLanguage(test,language);
+
+var total=(gpa*50)+(converted*0.4)+10;
 
 document.getElementById("result").innerHTML=
-name+"님의 총점은 "+score.toFixed(2)+"점 입니다.";
+name+"님의 환산 어학점수: "+converted.toFixed(1)+"<br>총점: "+total.toFixed(2);
 
 }
 
