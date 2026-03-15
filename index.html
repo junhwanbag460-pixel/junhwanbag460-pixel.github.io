@@ -1,54 +1,36 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 
 <meta charset="UTF-8">
 
-<title>교환학생 모의지원 시스템</title>
+<title>KHU Exchange Simulator</title>
 
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 
 <style>
 
 body{
-font-family: Arial;
-background:#f4f6f9;
-margin:0;
-}
-
-header{
-background:#2c3e50;
-color:white;
-padding:20px;
-text-align:center;
-font-size:26px;
-}
-
-.container{
-width:600px;
-margin:40px auto;
-background:white;
+font-family:Arial;
+max-width:700px;
+margin:auto;
 padding:30px;
-border-radius:10px;
-box-shadow:0 0 10px rgba(0,0,0,0.1);
 }
 
 input,select{
 width:100%;
-padding:10px;
-margin:10px 0;
-font-size:15px;
+padding:8px;
+margin:5px 0;
 }
 
 button{
-width:100%;
-padding:12px;
-background:#3498db;
-color:white;
-border:none;
-font-size:16px;
-border-radius:5px;
-cursor:pointer;
+padding:10px;
+margin-top:10px;
+}
+
+#form{
+display:none;
 }
 
 </style>
@@ -57,209 +39,150 @@ cursor:pointer;
 
 <body>
 
-<header>
+<h2>경희대학교 교환학생 모의지원</h2>
 
-교환학생 모의지원 사이트
+<div id="loginSection">
 
-</header>
+<div id="g_id_onload"
+data-client_id="YOUR_CLIENT_ID"
+data-callback="handleCredentialResponse"
+data-auto_prompt="false"
+data-auto_select="false">
+</div>
 
-<div class="container">
+<div class="g_id_signin"
+data-type="standard"
+data-size="large">
+</div>
 
-<h3>경희대학교 이메일 로그인</h3>
+</div>
 
-<div id="loginDiv"></div>
+<div id="form">
 
-<p id="loginStatus">로그인 필요</p>
-
-<hr>
-
-<h3>지원 정보 입력</h3>
+<p id="userEmail"></p>
 
 이름
 <input id="name">
 
-학점 (4.3 만점)
+학점 (4.3)
 <input id="gpa">
 
 어학 시험
 <select id="language">
+
 <option value="toefl">TOEFL</option>
 <option value="ielts">IELTS</option>
 <option value="institution">기관토플</option>
+
 </select>
 
 어학 점수
-<input id="score">
+<input id="languageScore">
 
-<h4>지원 대학 선택</h4>
+<h3>지원 대학</h3>
 
-1지망
-<select id="uni1">
-<option></option>
-<option>University A</option>
-<option>University B</option>
-<option>University C</option>
-</select>
+<input id="uni1" placeholder="1지망">
+<input id="uni2" placeholder="2지망">
+<input id="uni3" placeholder="3지망">
+<input id="uni4" placeholder="4지망">
+<input id="uni5" placeholder="5지망">
 
-2지망
-<select id="uni2">
-<option></option>
-<option>University A</option>
-<option>University B</option>
-<option>University C</option>
-</select>
-
-3지망
-<select id="uni3">
-<option></option>
-<option>University A</option>
-<option>University B</option>
-<option>University C</option>
-</select>
-
-4지망
-<select id="uni4">
-<option></option>
-<option>University A</option>
-<option>University B</option>
-<option>University C</option>
-</select>
-
-5지망
-<select id="uni5">
-<option></option>
-<option>University A</option>
-<option>University B</option>
-<option>University C</option>
-</select>
-
-<button onclick="submitApplication()">
-
-지원하기
-
-</button>
+<button onclick="submitForm()">제출</button>
 
 </div>
 
 <script>
 
-let userEmail="";
-
-window.onload=function(){
-
-google.accounts.id.initialize({
-client_id:"921438929134-p78aqn2dv6p9mka6orajf0c6c841qrnj.apps.googleusercontent.com",
-callback:handleCredentialResponse
-});
-
-google.accounts.id.renderButton(
-document.getElementById("loginDiv"),
-{ theme:"outline", size:"large"}
-);
-
-google.accounts.id.prompt();
-
-}
+let email=""
 
 function handleCredentialResponse(response){
 
-const data=parseJwt(response.credential);
+const data = JSON.parse(atob(response.credential.split('.')[1]))
 
-if(!data.email.endsWith("@khu.ac.kr")){
-alert("경희대학교 이메일만 사용 가능합니다.");
-return;
-}
+email = data.email
 
-userEmail=data.email;
+if(!email.endsWith("@khu.ac.kr")){
 
-document.getElementById("loginStatus").innerText="로그인됨: "+userEmail;
+alert("경희대학교 이메일만 로그인 가능합니다")
 
-}
-
-function parseJwt(token){
-
-var base64Url=token.split('.')[1];
-var base64=base64Url.replace(/-/g,'+').replace(/_/g,'/');
-var jsonPayload=decodeURIComponent(atob(base64).split('').map(function(c){
-return '%'+('00'+c.charCodeAt(0).toString(16)).slice(-2);
-}).join(''));
-
-return JSON.parse(jsonPayload);
+return
 
 }
 
-function calculateScore(gpa,language,score){
+document.getElementById("loginSection").style.display="none"
 
-let gpaScore=(gpa/4.3)*50;
+document.getElementById("form").style.display="block"
 
-let langScore=0;
+document.getElementById("userEmail").innerText="로그인됨: "+email
+
+}
+
+function calculateScore(){
+
+let gpa = Number(document.getElementById("gpa").value)
+
+let gpaScore = (gpa/4.3)*50
+
+let language = document.getElementById("language").value
+
+let score = Number(document.getElementById("languageScore").value)
+
+let langScore=0
 
 if(language=="toefl"){
-langScore=(score/120)*40;
+
+langScore=(score/120)*40
+
 }
 
 if(language=="ielts"){
-langScore=(score/9)*40;
+
+langScore=(score/9)*40
+
 }
 
 if(language=="institution"){
-langScore=(score/677)*40;
-}
 
-let essayScore=10;
-
-return gpaScore+langScore+essayScore;
+langScore=(score/677)*40
 
 }
 
-function submitApplication(){
+return gpaScore+langScore+10
 
-if(userEmail==""){
-alert("로그인 먼저 하세요");
-return;
 }
 
-let name=document.getElementById("name").value;
-let gpa=parseFloat(document.getElementById("gpa").value);
-let language=document.getElementById("language").value;
-let score=parseFloat(document.getElementById("score").value);
-
-let uni1=document.getElementById("uni1").value;
-let uni2=document.getElementById("uni2").value;
-let uni3=document.getElementById("uni3").value;
-let uni4=document.getElementById("uni4").value;
-let uni5=document.getElementById("uni5").value;
-
-let total=calculateScore(gpa,language,score);
+function submitForm(){
 
 let data={
-email:userEmail,
-name:name,
-gpa:gpa,
-language:language,
-score:score,
-total:total,
-uni1:uni1,
-uni2:uni2,
-uni3:uni3,
-uni4:uni4,
-uni5:uni5
-};
 
-fetch("YOUR_SCRIPT_URL",{
+email:email,
+name:document.getElementById("name").value,
+gpa:document.getElementById("gpa").value,
+language:document.getElementById("language").value,
+score:calculateScore(),
+
+uni1:document.getElementById("uni1").value,
+uni2:document.getElementById("uni2").value,
+uni3:document.getElementById("uni3").value,
+uni4:document.getElementById("uni4").value,
+uni5:document.getElementById("uni5").value
+
+}
+
+fetch("YOUR_APPS_SCRIPT_URL",{
 
 method:"POST",
 body:JSON.stringify(data)
 
 })
+
 .then(res=>res.text())
-.then(res=>{
 
-alert("지원 완료");
+.then(result=>{
 
-window.location.href="result.html?email="+userEmail;
+alert("저장 완료")
 
-});
+})
 
 }
 
