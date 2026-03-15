@@ -1,4 +1,4 @@
-const API="https://script.google.com/macros/s/AKfycbzf85dqYjE17WJv2gZP_FNqt8AQPp5kUDQwnSs2cMbPJac2Y2BXKpQBatGVm8ai6TWG/exec"
+const API="APPS_SCRIPT_URL"
 
 function calculate(gpa,language,score){
 
@@ -14,7 +14,7 @@ return gpaScore+lang+10
 
 }
 
-document.getElementById("form").addEventListener("submit", async function(e){
+document.getElementById("form").addEventListener("submit",function(e){
 
 e.preventDefault()
 
@@ -44,11 +44,13 @@ choice5:document.getElementById("c5").value
 
 }
 
-await fetch(API,{
+fetch(API,{
 method:"POST",
 body:JSON.stringify(data)
 })
-
+.then(res=>res.text())
+.then(res=>{
 window.location.href="result.html"
+})
 
 })
