@@ -25,13 +25,12 @@ font-size:28px;
 }
 
 .container{
-width:650px;
+width:700px;
 margin:auto;
 background:white;
 padding:30px;
 margin-top:40px;
 border-radius:10px;
-box-shadow:0 0 10px rgba(0,0,0,0.1);
 }
 
 input,select{
@@ -51,18 +50,12 @@ border-radius:5px;
 cursor:pointer;
 }
 
-.result{
-margin-top:20px;
-font-size:18px;
-line-height:1.6;
-}
-
-.login{
-margin-bottom:20px;
-padding:15px;
-background:#eef2f7;
-border-radius:8px;
-text-align:center;
+.uni{
+margin-top:10px;
+padding:10px;
+background:#e3f2fd;
+cursor:pointer;
+border-radius:6px;
 }
 
 </style>
@@ -77,9 +70,7 @@ text-align:center;
 
 <div class="container">
 
-<div class="login">
-
-<p id="loginStatus">경희대학교 이메일로 로그인하세요</p>
+<h3>경희대학교 이메일 로그인</h3>
 
 <div id="g_id_onload"
  data-client_id="921438929134-p78aqn2dv6p9mka6orajf0c6c841qrnj.apps.googleusercontent.com"
@@ -88,7 +79,9 @@ text-align:center;
 
 <div class="g_id_signin"></div>
 
-</div>
+<p id="loginStatus">로그인 필요</p>
+
+<hr>
 
 <h2>지원 정보 입력</h2>
 
@@ -100,11 +93,9 @@ text-align:center;
 
 어학 시험
 <select id="test">
-
 <option value="toefl">TOEFL</option>
 <option value="ielts">IELTS</option>
 <option value="inst">기관TOEFL</option>
-
 </select>
 
 어학 점수
@@ -113,53 +104,18 @@ text-align:center;
 <h3>지원 대학</h3>
 
 1지망
-<select id="uni1">
-<option value="">선택 안 함</option>
-<option>Tokyo University</option>
-<option>National Taiwan University</option>
-<option>University of Amsterdam</option>
-<option>University of Sydney</option>
-</select>
+<input id="uni1">
 
 2지망
-<select id="uni2">
-<option value="">선택 안 함</option>
-<option>Tokyo University</option>
-<option>National Taiwan University</option>
-<option>University of Amsterdam</option>
-<option>University of Sydney</option>
-</select>
+<input id="uni2">
 
 3지망
-<select id="uni3">
-<option value="">선택 안 함</option>
-<option>Tokyo University</option>
-<option>National Taiwan University</option>
-<option>University of Amsterdam</option>
-<option>University of Sydney</option>
-</select>
-
-4지망
-<select id="uni4">
-<option value="">선택 안 함</option>
-<option>Tokyo University</option>
-<option>National Taiwan University</option>
-<option>University of Amsterdam</option>
-<option>University of Sydney</option>
-</select>
-
-5지망
-<select id="uni5">
-<option value="">선택 안 함</option>
-<option>Tokyo University</option>
-<option>National Taiwan University</option>
-<option>University of Amsterdam</option>
-<option>University of Sydney</option>
-</select>
+<input id="uni3">
 
 <button onclick="calculate()">지원하기</button>
 
-<div class="result" id="result"></div>
+<div id="result"></div>
+<div id="analysis"></div>
 
 </div>
 
@@ -167,84 +123,54 @@ text-align:center;
 
 let userEmail=""
 let loggedIn=false
-
+let myScore=0
 
 function handleCredentialResponse(response){
 
 const data = JSON.parse(atob(response.credential.split('.')[1]))
-
-let email = data.email
+let email=data.email
 
 if(!email.endsWith("@khu.ac.kr")){
 
-alert("경희대학교 이메일(@khu.ac.kr)만 로그인 가능합니다")
+alert("경희대학교 이메일만 로그인 가능합니다")
 return
 
 }
 
-userEmail = email
-loggedIn = true
+userEmail=email
+loggedIn=true
 
-document.getElementById("loginStatus").innerText =
-"로그인: " + email
-
-}
-
-
-/* Google Sheets 저장 */
-
-async function saveData(data){
-
-await fetch("https://script.google.com/macros/s/AKfycbwESU3boFchpmUqo6oMj4_JM0c92nzFsL2kUgjWomp1av9Ywa9783-tP7zjZB-EY0VN/exec",{
-
-method:"POST",
-body:JSON.stringify(data)
-
-})
+document.getElementById("loginStatus").innerText="로그인: "+email
 
 }
-
 
 /* IELTS 환산 */
 
 const ieltsToefl={
-
 9:120,
 8:112,
 7.5:107,
 7:99,
 6.5:92,
 6:80
-
 }
-
 
 /* 기관토플 환산 */
 
 const instToefl={
-
 677:120,673:120,670:119,667:118,663:117,657:116,
 653:115,650:114,647:113,643:112,640:111,637:110,
 633:109,630:108,627:107,623:106,620:105,617:104,
-613:103,610:102,607:101,603:100,600:99,597:98,
-593:97,590:96,587:95,583:93,580:92,577:91,
-573:89,570:88,567:87,563:85,560:83,557:82,
-553:81,550:80
-
+613:103,610:102,607:101,603:100,600:99,597:98
 }
-
 
 function convertLanguage(test,score){
 
 score=parseFloat(score)
 
-if(test=="toefl"){
-return score
-}
+if(test=="toefl") return score
 
-if(test=="ielts"){
-return ieltsToefl[score]||0
-}
+if(test=="ielts") return ieltsToefl[score]||0
 
 if(test=="inst"){
 
@@ -264,12 +190,24 @@ return 0
 
 }
 
+/* 데이터 저장 */
+
+async function saveData(data){
+
+await fetch("https://script.google.com/macros/s/AKfycbwESU3boFchpmUqo6oMj4_JM0c92nzFsL2kUgjWomp1av9Ywa9783-tP7zjZB-EY0VN/exec",{
+
+method:"POST",
+body:JSON.stringify(data)
+
+})
+
+}
 
 function calculate(){
 
 if(!loggedIn){
 
-alert("먼저 경희대학교 이메일로 로그인하세요")
+alert("먼저 로그인하세요")
 return
 
 }
@@ -283,36 +221,13 @@ let language=document.getElementById("language").value
 let uni1=document.getElementById("uni1").value
 let uni2=document.getElementById("uni2").value
 let uni3=document.getElementById("uni3").value
-let uni4=document.getElementById("uni4").value
-let uni5=document.getElementById("uni5").value
-
 
 let converted=convertLanguage(test,language)
 
 let gpaScore=(gpa/4.3)*50
 let languageScore=converted*0.4
 
-let total=gpaScore+languageScore+10
-
-
-document.getElementById("result").innerHTML=
-
-"<b>"+name+"</b><br><br>"+
-
-"환산 TOEFL 점수 : "+converted+"<br>"+
-"학점 점수 : "+gpaScore.toFixed(2)+"<br>"+
-"어학 점수 : "+languageScore.toFixed(2)+"<br>"+
-"자소서 점수 : 10<br><br>"+
-
-"<b>총점 : "+total.toFixed(2)+"</b><br><br>"+
-
-"지원 대학<br>"+
-"1지망 : "+uni1+"<br>"+
-"2지망 : "+uni2+"<br>"+
-"3지망 : "+uni3+"<br>"+
-"4지망 : "+uni4+"<br>"+
-"5지망 : "+uni5
-
+myScore=gpaScore+languageScore+10
 
 saveData({
 
@@ -320,12 +235,77 @@ email:userEmail,
 name:name,
 gpa:gpa,
 language:converted,
-score:total,
+score:myScore,
 uni1:uni1,
 uni2:uni2,
-uni3:uni3,
-uni4:uni4,
-uni5:uni5
+uni3:uni3
+
+})
+
+document.getElementById("result").innerHTML=
+
+"<h2>지원 결과</h2>"+
+"총점: "+myScore.toFixed(2)+"<br><br>"+
+"<b>지원 대학</b>"
+
+let list=[uni1,uni2,uni3]
+
+list.forEach(uni=>{
+
+if(uni){
+
+let div=document.createElement("div")
+div.className="uni"
+div.innerText=uni
+
+div.onclick=function(){
+analyzeUniversity(uni)
+}
+
+document.getElementById("result").appendChild(div)
+
+}
+
+})
+
+}
+
+/* 대학 분석 */
+
+function analyzeUniversity(uni){
+
+const url="https://script.google.com/macros/s/AKfycbwESU3boFchpmUqo6oMj4_JM0c92nzFsL2kUgjWomp1av9Ywa9783-tP7zjZB-EY0VN/exec"
+
+fetch(url)
+.then(res=>res.json())
+.then(data=>{
+
+let applicants=[]
+
+data.forEach(row=>{
+
+if(row[3]==uni||row[4]==uni||row[5]==uni){
+
+applicants.push(row[2])
+
+}
+
+})
+
+applicants.sort((a,b)=>b-a)
+
+let rank=applicants.findIndex(s=>s<=myScore)+1
+
+let total=applicants.length
+
+let percent=Math.round((rank/total)*100)
+
+document.getElementById("analysis").innerHTML=
+
+"<h3>"+uni+" 분석</h3>"+
+"지원자 수: "+total+"<br>"+
+"내 순위: "+rank+"위<br>"+
+"상위 "+percent+"%"
 
 })
 
