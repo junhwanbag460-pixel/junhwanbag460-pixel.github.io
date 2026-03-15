@@ -55,6 +55,13 @@ font-size:18px;
 line-height:1.6;
 }
 
+.login{
+margin-bottom:20px;
+padding:15px;
+background:#eef2f7;
+border-radius:8px;
+}
+
 </style>
 
 </head>
@@ -66,6 +73,14 @@ line-height:1.6;
 </header>
 
 <div class="container">
+
+<div class="login">
+
+<button onclick="login()">경희대학교 이메일 로그인</button>
+
+<p id="loginStatus">로그인 필요</p>
+
+</div>
 
 <h2>지원 정보 입력</h2>
 
@@ -142,6 +157,32 @@ line-height:1.6;
 
 <script>
 
+let userEmail=""
+let loggedIn=false
+
+
+function login(){
+
+let email = prompt("경희대학교 이메일(@khu.ac.kr)을 입력하세요")
+
+if(email.endsWith("@khu.ac.kr")){
+
+userEmail=email
+loggedIn=true
+
+document.getElementById("loginStatus").innerHTML=
+"로그인: "+email
+
+alert("로그인 성공")
+
+}else{
+
+alert("경희대학교 이메일(@khu.ac.kr)만 로그인 가능합니다")
+
+}
+
+}
+
 
 async function saveData(data){
 
@@ -150,14 +191,14 @@ await fetch("https://script.google.com/macros/s/AKfycbwESU3boFchpmUqo6oMj4_JM0c9
 method:"POST",
 body:JSON.stringify(data)
 
-});
+})
 
 }
 
 
-/* IELTS → TOEFL 환산 */
+/* IELTS 환산 */
 
-const ieltsToefl = {
+const ieltsToefl={
 
 9:120,
 8:112,
@@ -169,9 +210,9 @@ const ieltsToefl = {
 }
 
 
-/* 기관토플 → TOEFL 환산 */
+/* 기관토플 환산 */
 
-const instToefl = {
+const instToefl={
 
 677:120,673:120,670:119,667:118,663:117,657:116,
 653:115,650:114,647:113,643:112,640:111,637:110,
@@ -193,12 +234,12 @@ return score
 }
 
 if(test=="ielts"){
-return ieltsToefl[score] || 0
+return ieltsToefl[score]||0
 }
 
 if(test=="inst"){
 
-let keys = Object.keys(instToefl).map(Number).sort((a,b)=>b-a)
+let keys=Object.keys(instToefl).map(Number).sort((a,b)=>b-a)
 
 for(let k of keys){
 
@@ -217,6 +258,14 @@ return 0
 
 function calculate(){
 
+if(!loggedIn){
+
+alert("먼저 경희대학교 이메일로 로그인하세요")
+
+return
+
+}
+
 let name=document.getElementById("name").value
 let gpa=parseFloat(document.getElementById("gpa").value)
 
@@ -231,7 +280,6 @@ let uni5=document.getElementById("uni5").value
 
 
 let converted=convertLanguage(test,language)
-
 
 let gpaScore=(gpa/4.3)*50
 
@@ -261,6 +309,7 @@ document.getElementById("result").innerHTML=
 
 saveData({
 
+email:userEmail,
 name:name,
 gpa:gpa,
 language:converted,
