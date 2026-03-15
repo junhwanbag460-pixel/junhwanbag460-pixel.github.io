@@ -5,13 +5,104 @@
 
 <h2 id="title"></h2>
 
+<div id="result"></div>
+
 <script>
+
+const API="<!DOCTYPE html>
+<html>
+
+<body>
+
+<h2 id="title"></h2>
+
+<div id="result"></div>
+
+<script>
+
+const API="https://script.google.com/macros/s/AKfycbzz5pPUJuXWaWyUlYzFDYHQST_cyV_HGvHpad3HNjjM8rnkpktRecrC42sfjA6G5vsiiA/exec"
+
+async function load(){
 
 const params=new URLSearchParams(location.search)
 
 const uni=params.get("name")
 
 document.getElementById("title").innerText=uni
+
+const res=await fetch(API)
+
+const data=await res.json()
+
+const apps=data.applications
+const universities=data.universities
+
+const applicants=apps.filter(r=>r.includes(uni))
+
+applicants.sort((a,b)=>b[5]-a[5])
+
+const rank=applicants.findIndex(a=>a[1]=="test")+1
+
+const slots=universities.find(u=>u[0]==uni)[1]
+
+const result=rank<=slots?"합격권":"불합격권"
+
+document.getElementById("result").innerHTML=
+
+`
+지원자 수 : ${applicants.length}<br>
+내 순위 : ${rank}<br>
+정원 : ${slots}<br>
+결과 : ${result}
+`
+
+}
+
+load()
+
+</script>
+
+</body>
+
+</html>"
+
+async function load(){
+
+const params=new URLSearchParams(location.search)
+
+const uni=params.get("name")
+
+document.getElementById("title").innerText=uni
+
+const res=await fetch(API)
+
+const data=await res.json()
+
+const apps=data.applications
+const universities=data.universities
+
+const applicants=apps.filter(r=>r.includes(uni))
+
+applicants.sort((a,b)=>b[5]-a[5])
+
+const rank=applicants.findIndex(a=>a[1]=="test")+1
+
+const slots=universities.find(u=>u[0]==uni)[1]
+
+const result=rank<=slots?"합격권":"불합격권"
+
+document.getElementById("result").innerHTML=
+
+`
+지원자 수 : ${applicants.length}<br>
+내 순위 : ${rank}<br>
+정원 : ${slots}<br>
+결과 : ${result}
+`
+
+}
+
+load()
 
 </script>
 
