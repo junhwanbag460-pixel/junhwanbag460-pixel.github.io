@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>교환학생 모의지원</title>
+<title>교환학생 모의지원 시스템</title>
 
 <style>
 
@@ -50,6 +50,7 @@ cursor:pointer;
 .result{
 margin-top:20px;
 font-size:18px;
+line-height:1.6;
 }
 
 </style>
@@ -64,12 +65,12 @@ font-size:18px;
 
 <div class="container">
 
-<h2>지원 정보</h2>
+<h2>지원 정보 입력</h2>
 
 이름
 <input id="name">
 
-학점
+학점 (4.3 만점)
 <input id="gpa">
 
 어학 시험
@@ -108,6 +109,22 @@ font-size:18px;
 <option>University of Sydney</option>
 </select>
 
+4지망
+<select id="uni4">
+<option>Tokyo University</option>
+<option>National Taiwan University</option>
+<option>University of Amsterdam</option>
+<option>University of Sydney</option>
+</select>
+
+5지망
+<select id="uni5">
+<option>Tokyo University</option>
+<option>National Taiwan University</option>
+<option>University of Amsterdam</option>
+<option>University of Sydney</option>
+</select>
+
 <button onclick="calculate()">지원하기</button>
 
 <div class="result" id="result"></div>
@@ -116,7 +133,7 @@ font-size:18px;
 
 <script>
 
-/* IELTS 환산 */
+/* IELTS → TOEFL 환산 */
 
 const ieltsToefl={
 9:120,
@@ -127,7 +144,7 @@ const ieltsToefl={
 6:80
 }
 
-/* 기관토플 환산 */
+/* 기관토플 → TOEFL 환산 */
 
 const instToefl={
 677:120,673:120,670:119,667:118,663:117,657:116,
@@ -148,7 +165,7 @@ return score
 }
 
 if(test=="ielts"){
-return ieltsToefl[score]||0
+return ieltsToefl[score] || 0
 }
 
 if(test=="inst"){
@@ -164,7 +181,6 @@ return instToefl[k]
 }
 
 return 0
-
 }
 
 function calculate(){
@@ -177,16 +193,38 @@ let language=document.getElementById("language").value
 let uni1=document.getElementById("uni1").value
 let uni2=document.getElementById("uni2").value
 let uni3=document.getElementById("uni3").value
+let uni4=document.getElementById("uni4").value
+let uni5=document.getElementById("uni5").value
 
 let converted=convertLanguage(test,language)
 
-let total=(gpa*50)+(converted*0.4)+10
+/* 학점 점수 (4.3 기준 50점) */
+
+let gpaScore=(gpa/4.3)*50
+
+/* 어학 점수 */
+
+let languageScore=converted*0.4
+
+/* 총점 */
+
+let total=gpaScore+languageScore+10
 
 document.getElementById("result").innerHTML=
-name+"<br>"+
-"환산 TOEFL: "+converted+"<br>"+
-"총점: "+total.toFixed(2)+"<br>"+
-"지원 대학: "+uni1+" / "+uni2+" / "+uni3
+
+"<b>"+name+"</b><br>"+
+"환산 TOEFL 점수: "+converted+"<br>"+
+"학점 점수: "+gpaScore.toFixed(2)+"<br>"+
+"어학 점수: "+languageScore.toFixed(2)+"<br>"+
+"자소서 점수: 10<br>"+
+"<b>총점: "+total.toFixed(2)+"</b><br><br>"+
+
+"지원 대학<br>"+
+"1지망: "+uni1+"<br>"+
+"2지망: "+uni2+"<br>"+
+"3지망: "+uni3+"<br>"+
+"4지망: "+uni4+"<br>"+
+"5지망: "+uni5
 
 }
 
