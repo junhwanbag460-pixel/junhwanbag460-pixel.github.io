@@ -8,7 +8,7 @@
 
 body{
 font-family:Arial;
-background:#f5f6fa;
+background:#f4f6f8;
 margin:0;
 }
 
@@ -21,7 +21,7 @@ font-size:28px;
 }
 
 .container{
-width:600px;
+width:650px;
 margin:auto;
 background:white;
 padding:30px;
@@ -64,7 +64,7 @@ font-size:18px;
 
 <div class="container">
 
-<h2>지원 정보 입력</h2>
+<h2>지원 정보</h2>
 
 이름
 <input id="name">
@@ -82,6 +82,32 @@ font-size:18px;
 어학 점수
 <input id="language">
 
+<h3>지원 대학</h3>
+
+1지망
+<select id="uni1">
+<option>Tokyo University</option>
+<option>National Taiwan University</option>
+<option>University of Amsterdam</option>
+<option>University of Sydney</option>
+</select>
+
+2지망
+<select id="uni2">
+<option>Tokyo University</option>
+<option>National Taiwan University</option>
+<option>University of Amsterdam</option>
+<option>University of Sydney</option>
+</select>
+
+3지망
+<select id="uni3">
+<option>Tokyo University</option>
+<option>National Taiwan University</option>
+<option>University of Amsterdam</option>
+<option>University of Sydney</option>
+</select>
+
 <button onclick="calculate()">지원하기</button>
 
 <div class="result" id="result"></div>
@@ -90,17 +116,9 @@ font-size:18px;
 
 <script>
 
-/* 환산표 */
+/* IELTS 환산 */
 
-const instToefl = {
-677:120,673:120,670:119,667:118,663:117,657:116,653:115,650:114,
-647:113,643:112,640:111,637:110,633:109,630:108,627:107,623:106,
-620:105,617:104,613:103,610:102,607:101,603:100,600:99,597:98,
-593:97,590:96,587:95,583:93,580:92,577:91,573:89,570:88,
-567:87,563:85,560:83,557:82,553:81,550:80
-}
-
-const ieltsToefl = {
+const ieltsToefl={
 9:120,
 8:112,
 7.5:107,
@@ -109,23 +127,29 @@ const ieltsToefl = {
 6:80
 }
 
+/* 기관토플 환산 */
+
+const instToefl={
+677:120,673:120,670:119,667:118,663:117,657:116,
+653:115,650:114,647:113,643:112,640:111,637:110,
+633:109,630:108,627:107,623:106,620:105,617:104,
+613:103,610:102,607:101,603:100,600:99,597:98,
+593:97,590:96,587:95,583:93,580:92,577:91,
+573:89,570:88,567:87,563:85,560:83,557:82,
+553:81,550:80
+}
+
 function convertLanguage(test,score){
 
 score=parseFloat(score)
-
-/* TOEFL 그대로 */
 
 if(test=="toefl"){
 return score
 }
 
-/* IELTS 환산 */
-
 if(test=="ielts"){
-return ieltsToefl[score] || 0
+return ieltsToefl[score]||0
 }
-
-/* 기관토플 환산 */
 
 if(test=="inst"){
 
@@ -140,6 +164,7 @@ return instToefl[k]
 }
 
 return 0
+
 }
 
 function calculate(){
@@ -149,15 +174,19 @@ let gpa=parseFloat(document.getElementById("gpa").value)
 let test=document.getElementById("test").value
 let language=document.getElementById("language").value
 
-let converted=convertLanguage(test,language)
+let uni1=document.getElementById("uni1").value
+let uni2=document.getElementById("uni2").value
+let uni3=document.getElementById("uni3").value
 
-/* 총점 계산 */
+let converted=convertLanguage(test,language)
 
 let total=(gpa*50)+(converted*0.4)+10
 
 document.getElementById("result").innerHTML=
-name+"<br>환산 TOEFL 점수: "+converted+
-"<br>총점: "+total.toFixed(2)
+name+"<br>"+
+"환산 TOEFL: "+converted+"<br>"+
+"총점: "+total.toFixed(2)+"<br>"+
+"지원 대학: "+uni1+" / "+uni2+" / "+uni3
 
 }
 
