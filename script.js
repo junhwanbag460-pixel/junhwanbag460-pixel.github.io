@@ -1,4 +1,3 @@
-alert("script loaded")
 const API="https://script.google.com/macros/s/AKfycbzxjV02UQG6rjGiKuCgcL9Q3uut6Ep2rvjCVRta7YNQ3bcWJwUlaksd_ttX6s3BAh0o/exec"
 
 function calculate(gpa,language,score){
@@ -51,7 +50,11 @@ body:JSON.stringify(data)
 })
 .then(res=>res.text())
 .then(res=>{
-window.location.href="result.html"
+
+alert("지원이 완료되었습니다")
+
+window.location.href="universities.html"
+
 })
 
 })
