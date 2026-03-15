@@ -2,13 +2,13 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>교환학생 모의지원 시스템</title>
+<title>교환학생 모의지원</title>
 
 <style>
 
 body{
 font-family:Arial;
-background:#f4f6f8;
+background:#f5f6fa;
 margin:0;
 }
 
@@ -43,8 +43,8 @@ border:none;
 padding:12px;
 width:100%;
 font-size:16px;
-cursor:pointer;
 border-radius:5px;
+cursor:pointer;
 }
 
 .result{
@@ -59,7 +59,7 @@ font-size:18px;
 <body>
 
 <header>
-교환학생 모의지원 사이트
+교환학생 모의지원 시스템
 </header>
 
 <div class="container">
@@ -72,14 +72,14 @@ font-size:18px;
 학점
 <input id="gpa">
 
-어학시험 종류
+어학 시험
 <select id="test">
 <option value="toefl">TOEFL</option>
 <option value="ielts">IELTS</option>
 <option value="inst">기관TOEFL</option>
 </select>
 
-어학점수
+어학 점수
 <input id="language">
 
 <button onclick="calculate()">지원하기</button>
@@ -90,37 +90,74 @@ font-size:18px;
 
 <script>
 
+/* 환산표 */
+
+const instToefl = {
+677:120,673:120,670:119,667:118,663:117,657:116,653:115,650:114,
+647:113,643:112,640:111,637:110,633:109,630:108,627:107,623:106,
+620:105,617:104,613:103,610:102,607:101,603:100,600:99,597:98,
+593:97,590:96,587:95,583:93,580:92,577:91,573:89,570:88,
+567:87,563:85,560:83,557:82,553:81,550:80
+}
+
+const ieltsToefl = {
+9:120,
+8:112,
+7.5:107,
+7:99,
+6.5:92,
+6:80
+}
+
 function convertLanguage(test,score){
 
-score=parseFloat(score);
+score=parseFloat(score)
+
+/* TOEFL 그대로 */
 
 if(test=="toefl"){
-return score;
+return score
 }
+
+/* IELTS 환산 */
 
 if(test=="ielts"){
-return score*12;
+return ieltsToefl[score] || 0
 }
+
+/* 기관토플 환산 */
 
 if(test=="inst"){
-return (score-550)*0.2+80;
+
+let keys=Object.keys(instToefl).map(Number).sort((a,b)=>b-a)
+
+for(let k of keys){
+if(score>=k){
+return instToefl[k]
+}
 }
 
+}
+
+return 0
 }
 
 function calculate(){
 
-var name=document.getElementById("name").value;
-var gpa=parseFloat(document.getElementById("gpa").value);
-var test=document.getElementById("test").value;
-var language=document.getElementById("language").value;
+let name=document.getElementById("name").value
+let gpa=parseFloat(document.getElementById("gpa").value)
+let test=document.getElementById("test").value
+let language=document.getElementById("language").value
 
-var converted=convertLanguage(test,language);
+let converted=convertLanguage(test,language)
 
-var total=(gpa*50)+(converted*0.4)+10;
+/* 총점 계산 */
+
+let total=(gpa*50)+(converted*0.4)+10
 
 document.getElementById("result").innerHTML=
-name+"님의 환산 어학점수: "+converted.toFixed(1)+"<br>총점: "+total.toFixed(2);
+name+"<br>환산 TOEFL 점수: "+converted+
+"<br>총점: "+total.toFixed(2)
 
 }
 
